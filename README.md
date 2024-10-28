@@ -24,7 +24,7 @@ To get started with graph-schema-diff, follow these steps:
 
 1. Clone the repository:
    ```bash
-   https://github.com/GeorgiosEtsias/graph-schema-diff.git
+   git clone https://github.com/GeorgiosEtsias/graph-schema-diff.git
    ```
 2. Navigate to the project directory:
    ```bash
@@ -42,8 +42,8 @@ To get started with graph-schema-diff, follow these steps:
 3. Import the schema1 and schema2 in the designated boxes (keep only the schema, no starting """ """ needed.)
 4. Choose summarization technique: 'algorithmic' or 'GPT3.5'.
 5. Generate the results.
-
-![img_1.png](img_1.png)
+6. 
+![GraphQL Schema Diff](images/img1.JPG)
 
 ### Prerequisites
 To use GPT3.5 as a summarization technique, you need to add your own API-KEY in the  release_summary.py script.
@@ -72,7 +72,7 @@ To use GPT3.5 as a summarization technique, you need to add your own API-KEY in 
 - **`src/`**: Contains the python package.
   - `__init__.py`: Marks the directory as a Python package and can be used to expose specific functions.
   - `gpt35_summarization.py`: Script initializes the GPT3.5 model, to summarize the changes encountered between 2 versions of a GraphQL schema.
-  - `main-fastapi.py`: Script launches a fast-api app, that enables the user  to test the changes between 2 versions fo a GraphQL schema.
+  - `main-fastapi.py`: Script launches a fast-api app, that enables the user  to test the changes between 2 versions of a GraphQL schema.
   - `release_summary.py`: Script generates the release summary, for a given release changes list of dictionaries.
   - `schema_changes.py`: Script to identify all the differences between two versions of a GraphQL schema.
   - `schema_diff_report.py`: Script determines all the breaking and non-breaking changes between 2 versions of a GraphQL schema, and generates a summary report.

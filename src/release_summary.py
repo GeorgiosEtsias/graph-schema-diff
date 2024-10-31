@@ -4,11 +4,17 @@ Script generates the release summary, for a given release changes
 list of dictionaries.
 
 """
+import os
+from dotenv import load_dotenv
+
 # import packages
 from gpt35_summarization import initialize_langchain
 
-# import constants
-MY_API_KEY = ''
+# Load environment variables from .env file
+load_dotenv()
+
+# get the api keyv
+MY_API_KEY = os.getenv('MY_API_KEY')
 
 def generate_release_summary(changes: list, summarization: str) -> dict:
     """

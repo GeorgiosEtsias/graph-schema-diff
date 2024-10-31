@@ -25,17 +25,6 @@ def test_compare_schemas_non_breaking_new_feature():
         goodbye: String
     }
     """
-    expected_result = [
-        {
-            "type": "Query",
-            "field": "goodbye",
-            "change": "Added new field 'goodbye'",
-            "breaking": False,
-            "release_note": "A new field 'goodbye' has been added to 'Query'. "
-                            "This is a non-breaking change."
-        }
-    ]
-
     expected_result = {
     "changes": [
     {
@@ -50,7 +39,7 @@ def test_compare_schemas_non_breaking_new_feature():
     }}
 
     # Act
-    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic')
+    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic', 'algorithmic')
 
     # Assert
     assert changes == expected_result
@@ -87,7 +76,7 @@ def test_compare_schemas_type_removed():
   }
 }
 
-    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic')
+    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic','algorithmic')
     assert changes == expected_result
 
 
@@ -119,7 +108,7 @@ def test_compare_schemas_type_type_changed():
   }
 }
 
-    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic')
+    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic','algorithmic')
     assert changes == expected_result
 
 
@@ -153,7 +142,7 @@ def test_compare_schemas_type_feature_removed():
   }
 }
 
-    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic')
+    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic','algorithmic')
     assert changes == expected_result
 
 #WRONG FIX IT
@@ -186,7 +175,7 @@ def test_compare_schemas_feature_type_changed():
   }
 }
 
-    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic')
+    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic','algorithmic')
     assert changes == expected_result
 
 # this is the real mistake
@@ -221,7 +210,7 @@ def test_compare_schemas_type_add():
         }
     }
 
-    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic')
+    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic','algorithmic')
     assert changes == expected_result
 
 
@@ -255,7 +244,7 @@ def test_compare_schemas_feature_added():
         }
     }
 
-    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic')
+    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic','algorithmic')
     assert changes == expected_result
 
 
@@ -288,7 +277,7 @@ def test_compare_schemas_argument_added():
   }
 }
 
-    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic')
+    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic','algorithmic')
     assert changes == expected_result
 
 
@@ -313,7 +302,7 @@ def test_compare_schemas_no_change():
         }
     }
 
-    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic')
+    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic','algorithmic')
     assert changes == expected_result
 
 
@@ -340,7 +329,7 @@ def test_compare_schemas_cannot_be_parsed():
         }
     }
 
-    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic')
+    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic','algorithmic')
     assert changes["parsing_failed"][0] == "Version 2 of the GraphQL schema could not be parsed"
 
 
@@ -506,5 +495,5 @@ def test_multi_change_schema():
   }
 }
 
-    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic')
+    changes = graphql_diff_report(schema_v1, schema_v2, 'algorithmic','algorithmic')
     assert changes == expected_result

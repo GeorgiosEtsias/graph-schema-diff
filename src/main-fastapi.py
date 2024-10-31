@@ -23,6 +23,7 @@ app = FastAPI(title="graph-schema-difference-Georgios-Etsias")
 def compare_schemas_endpoint(
     schema1: str,
     schema2: str,
+    identify_changes_technique: str = Query("algorithmic", enum=["algorithmic", "GPT3.5"]),
     summarization_technique: str = Query("algorithmic", enum=["algorithmic", "GPT3.5"])
 ):
     try:
@@ -30,10 +31,11 @@ def compare_schemas_endpoint(
         logger.info("Received schemas for comparison:")
         logger.debug(f"Schema 1: {schema1}")
         logger.debug(f"Schema 2: {schema2}")
+        logger.debug(f"Technique of identifying schema changes: {identify_changes_technique}")
         logger.debug(f"Summarization Technique: {summarization_technique}")
 
         # Pass the summarization technique to the graphql_diff_report
-        result = graphql_diff_report(schema1, schema2, summarization_technique)
+        result = graphql_diff_report(schema1, schema2, identify_changes_technique, summarization_technique)
 
         # Return the comparison result
         return JSONResponse(content=result)

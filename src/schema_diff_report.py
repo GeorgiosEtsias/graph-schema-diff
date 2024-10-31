@@ -11,6 +11,7 @@ from graphql import GraphQLSchema, build_schema
 
 # import custom modules
 from schema_changes import compare_schemas
+from schema_changes_llm import  analyze_schema_changes
 from release_summary import generate_release_summary
 
 def parse_schema(schema_str: str ) -> GraphQLSchema | dict:
@@ -72,6 +73,7 @@ def check_graphql_parsing_failure(schema_version1, schema_version2):
 
 def graphql_diff_report(schema_v1_str: str,
                         schema_v2_str: str,
+                        identify_changes_technique: str,
                         summarization_technique: str) -> dict | str:
     """
 
@@ -82,28 +84,57 @@ def graphql_diff_report(schema_v1_str: str,
     Args:
         schema_v1_str (str): the string of the first version of the GraphQL schema
         schema_v2_str (str): the string of the second version of the GraphQL schema
+        identify_changes_technique (str): The technique for identifying the schema changes
+            could be: 'algorithmic' or 'GPT3.5' based
         summarization_technique (str): The technique for generating the summary could
-            be: 'algorithmic' or 'GPT3.5'
+            be: 'algorithmic' or 'GPT3.5' based
 
     Returns:
         dict: A dictionary with the changes and the summary report.
 
-    """
 
-    schema_v1_str = schema_v1_str.replace('\r\n', '\n').strip()
-    schema_v2_str = schema_v2_str.replace('\r\n', '\n').strip()
+    """
+    # instantiate changes
+    changes = []
+
+    # remove string whitespace
+    schema_v1_str = ' '.join(schema_v1_str.strip().split())
+    schema_v2_str = ' '.join(schema_v2_str.strip().split())
+
+    # if the schema strings are identical terminate the procedure.
+    if schema_v1_str == schema_v2_str:
+        changes = []
+        # summarize the differences
+        changes_with_summary = generate_release_summary(changes, summarization_technique)
+        return changes_with_summary
+
+    # Check if the schemas have the expected GraphQL structure
+    schema_v1_str_mod = schema_v1_str.replace('\r\n', '\n').strip()
+    schema_v2_str_mod = schema_v2_str.replace('\r\n', '\n').strip()
 
     # parse the GraphQL schemas
-    schema_version1 = parse_schema(schema_v1_str)
-    schema_version2 = parse_schema(schema_v2_str)
+    schema_version1 = parse_schema(schema_v1_str_mod)
+    schema_version2 = parse_schema(schema_v2_str_mod)
 
     # terminate the procedure if schemas were not parsed
     parsing_failure = check_graphql_parsing_failure(schema_version1, schema_version2)
     if parsing_failure is not None:
         return parsing_failure
 
+    # if the parsed schemas are identical terminate the procedure.
+    if schema_version1 == schema_version2:
+        changes = []
+        # summarize the differences
+        changes_with_summary = generate_release_summary(changes, summarization_technique)
+        return changes_with_summary
+
+
     # identify the differences between the 2 schemas
-    changes = compare_schemas(schema_version1, schema_version2)
+    if identify_changes_technique == 'GPT3.5': # LLM based solution
+        changes = analyze_schema_changes(schema_v1_str, schema_v2_str)
+
+    elif identify_changes_technique == 'algorithmic':  # Pythonic solution
+        changes = compare_schemas(schema_version1, schema_version2)
 
     # summarize the differences
     changes_with_summary = generate_release_summary(changes, summarization_technique)

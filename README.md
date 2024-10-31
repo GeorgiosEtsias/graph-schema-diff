@@ -5,7 +5,8 @@ The module identifies all the breaking and non-breaking changes between 2 versio
 of a GraphQL schema. 
 - Each change is provided with its own release notes.
 - Finally, all the changes are summarized in a single paragraph.
-- The summarization is executed either algorithmically, or by employing OpenAI's GPT3.5 model.  
+  - The tracking of the changes and the summarization are executed either algorithmically,
+  or by employing OpenAI's GPT3.5 model.  
 
 ## Components
 - FAST-API app
@@ -40,13 +41,14 @@ To get started with graph-schema-diff, follow these steps:
 1. Launch the FAST-API app: main-fastapi.py script
 2. Access the app through the browser: http://127.0.0.1:8000/docs 
 3. Import the schema1 and schema2 in the designated boxes (keep only the schema, no starting """ """ needed.)
-4. Choose summarization technique: 'algorithmic' or 'GPT3.5'.
-5. Generate the results.
-6. 
+4. Choose identify changes technique: 'algorithmic' or 'GPT3.5'.
+5. Choose summarization technique: 'algorithmic' or 'GPT3.5'.
+6. Generate the results.
+
 ![GraphQL Schema Diff](images/img1.JPG)
 
 ### Prerequisites
-To use GPT3.5 as a summarization technique, you need to add your own API-KEY in the  release_summary.py script.
+To use GPT3.5 as a summarization technique, you need to add your own API-KEY in the .env vars.
 
 ## Project Structure
 
@@ -57,6 +59,7 @@ To use GPT3.5 as a summarization technique, you need to add your own API-KEY in 
 │   │   ├── main-fastapi.py
 │   │   ├── release_summary.py
 │   │   ├── schema_changes.py
+│   │   ├── schema_changes_llm.py
 │   │   ├── schema_diff_report.py
 │   ├── tests/
 │   │   ├── unit/
@@ -74,6 +77,7 @@ To use GPT3.5 as a summarization technique, you need to add your own API-KEY in 
   - `gpt35_summarization.py`: Script initializes the GPT3.5 model, to summarize the changes encountered between 2 versions of a GraphQL schema.
   - `main-fastapi.py`: Script launches a fast-api app, that enables the user  to test the changes between 2 versions of a GraphQL schema.
   - `release_summary.py`: Script generates the release summary, for a given release changes list of dictionaries.
+  - `schema_changes_llm.py`: Script to identify all the differences between two versions of a GraphQL schema, employing GPT3.5.
   - `schema_changes.py`: Script to identify all the differences between two versions of a GraphQL schema.
   - `schema_diff_report.py`: Script determines all the breaking and non-breaking changes between 2 versions of a GraphQL schema, and generates a summary report.
 
@@ -88,18 +92,6 @@ To use GPT3.5 as a summarization technique, you need to add your own API-KEY in 
 ### Example data:
 ##### Schema Version1
 ```
-        scalar Status
-
-        enum Role {
-            ADMIN
-            ACTIVE
-        }
-
-        schema {
-            query: Query
-            mutation: Mutation
-        }
-
         type Character {
         id: ID!
         name: String!
@@ -131,17 +123,6 @@ To use GPT3.5 as a summarization technique, you need to add your own API-KEY in 
 
 ##### Schema Version2
 ```
-        enum Status {
-            ACTIVE
-            INACTIVE
-        }
-
-        enum Role {
-            ADMIN
-            USER
-            GUEST
-        }
-
         interface Character {
         id: ID!
         name: String!
@@ -174,30 +155,6 @@ To use GPT3.5 as a summarization technique, you need to add your own API-KEY in 
 ```
 {
   "changes": [
-    {
-      "type": "Status",
-      "change": "Type changed from 'GraphQLScalarType' to 'GraphQLEnumType'",
-      "breaking": True,
-      "release_note": "The type 'Status' has changed from 'GraphQLScalarType' to 'GraphQLEnumType'. This is a breaking change."
-    },
-    {
-      "type": "Role",
-      "change": "Value 'ACTIVE' was removed",
-      "breaking": True,
-      "release_note": "Value 'ACTIVE' on enum type 'Role' has been removed. Update any queries or mutations using this field."
-    },
-    {
-      "type": "Role",
-      "change": "Added new value 'USER'",
-      "breaking": False,
-      "release_note": "A new value 'USER' has been added to enum type 'Role'. This is a non-breaking change."
-    },
-    {
-      "type": "Role",
-      "change": "Added new value 'GUEST'",
-      "breaking": False,
-      "release_note": "A new value 'GUEST' has been added to enum type 'Role'. This is a non-breaking change."
-    },
     {
       "type": "Character",
       "change": "Type changed from 'GraphQLObjectType' to 'GraphQLInterfaceType'",

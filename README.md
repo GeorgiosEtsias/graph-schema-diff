@@ -5,7 +5,7 @@ The module identifies all the breaking and non-breaking changes between 2 versio
 of a GraphQL schema. 
 - Each change is provided with its own release notes.
 - Finally, all the changes are summarized in a single paragraph.
-  - The tracking of the changes and the summarization are executed either algorithmically,
+- The tracking of the changes and the summarization are executed either algorithmically,
   or by employing OpenAI's GPT3.5 model.  
 
 ## Components
